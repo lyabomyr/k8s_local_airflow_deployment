@@ -1,20 +1,4 @@
 brew install helm  kubectl yq ;
-#git clone https://github.com/gocityengineering/airflow-local-setup.git;
-#set airflow dag folder
-#export LOCAL_DAGS_FOLDER=../
-# check location  ls -a $LOCAL_DAGS_FOLDER
-
-#yq -i "
-#.nodes[1].extraMounts[1].hostPath = \"$LOCAL_DAGS_FOLDER\" |
-#.nodes[1].extraMounts[1].containerPath = \"/tmp/dags\"  |
-#.nodes[2].extraMounts[1].hostPath = \"$LOCAL_DAGS_FOLDER\" |
-#.nodes[2].extraMounts[1].containerPath = \"/tmp/dags\"  |
-#.nodes[3].extraMounts[1].hostPath = \"$LOCAL_DAGS_FOLDER\" |
-#.nodes[3].extraMounts[1].containerPath = \"/tmp/dags\"
-#" kind-cluster.yaml
-## CREATE KUBE CLUSTER
-#brew install docker docker-compose colima;
-#colima start --cpu 8 --memory 10 --disk 100;
 
 #Create the kind cluster
 kind create cluster --name airflow-cluster --config kind-cluster.yaml
