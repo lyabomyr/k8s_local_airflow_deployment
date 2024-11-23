@@ -1,4 +1,4 @@
-colima start --profile amd --arch amd --cpu 10 --memory 16 --disk 80
+#colima start --profile amd --arch amd --cpu 10 --memory 16 --disk 80
 
 helm repo add spark-operator https://kubeflow.github.io/spark-operator
 
