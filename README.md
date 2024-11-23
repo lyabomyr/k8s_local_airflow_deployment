@@ -2,13 +2,13 @@
 # Airflow Kubernetes local deployment 
 
 _for local airflow deploy to k8s need to:_
+> * move deployment_local directory `cd deployment_local`
 
 > * start docker engine `for execute docker engine on mac: brew install docker docker-compose colima; colima start --cpu 8 --memory 10 --disk 100;`
 
 > * start script `bash start_local_env.sh`
 
 > * after comleted k8s helm deploy for open airflow need to made port-forwarding
-
 > * execute `kubectl -n airflow get pods` - get webserver pod name;
 
 > port forward webserver: 
@@ -18,6 +18,7 @@ _for local airflow deploy to k8s need to:_
 
 > For stop airflow need to execute `bash stop_local_env.sh`
 
+> 
 Note:
 
     - we need logs directory here for claiming logs in airflow
