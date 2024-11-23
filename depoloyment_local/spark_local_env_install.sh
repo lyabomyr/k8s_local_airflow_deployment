@@ -8,12 +8,3 @@ kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount
 kubectl apply -f access_airflow_to_spark.yaml;
 kubectl apply -f access_event_wath_airflow.yaml;
 kubectl apply -f spark_role.yaml;
-
-#colima stop --force;
-#rm -rf ~/Library/Caches/colima;
-#rm -rf ~/Library/Caches/lima;
-#rm -rf /opt/colima;
-#rm -rf ~/.colima;
-#brew uninstall colima;
-#brew uninstall lima;
-#brew install docker docker-compose colima;
