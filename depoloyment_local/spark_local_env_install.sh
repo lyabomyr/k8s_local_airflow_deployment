@@ -1,5 +1,3 @@
-#colima start --profile amd --arch amd --cpu 10 --memory 16 --disk 80
-
 helm repo add spark-operator https://kubeflow.github.io/spark-operator
 
 helm install spark spark-operator/spark-operator --namespace airflow  --set sparkJobNamespace=airflow  --set webhook.enable=true;
