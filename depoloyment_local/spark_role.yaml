@@ -1,0 +1,26 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: airflow
+  name: spark-status-reader
+rules:
+- apiGroups: ["sparkoperator.k8s.io"]
+  resources: ["sparkapplications/status"]
+  verbs: ["get", "watch", "list"]
+
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: spark-status-reader-binding
+  namespace: airflow
+subjects:
+- kind: ServiceAccount
+  name: airflow-worker
+  namespace: airflow
+roleRef:
+  kind: Role
+  name: spark-status-reader
+  apiGroup: rbac.authorization.k8s.io

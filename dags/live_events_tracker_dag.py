@@ -4,7 +4,7 @@ from airflow.decorators import dag, task
 from custom_operators.fail_slack_alert_operator import task_fail_slack_alert
 
 default_args = {
-    'owner': 'apollo',
+    'owner': 'test',
     'retries': 3,
     'retry_delay': timedelta(minutes=5),
     'on_failure_callback': task_fail_slack_alert,
