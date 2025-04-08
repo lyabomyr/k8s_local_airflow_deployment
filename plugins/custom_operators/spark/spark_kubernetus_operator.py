@@ -6,7 +6,10 @@ from kubernetes.client import ApiException
 from kubernetes.watch import Watch
 from airflow.exceptions import AirflowException
 from airflow.models import BaseOperator
-from airflow.providers.cncf.kubernetes.hooks.kubernetes import KubernetesHook, _load_body_to_dict
+from airflow.providers.cncf.kubernetes.hooks.kubernetes import (
+    KubernetesHook,
+    _load_body_to_dict,
+)
 import json
 
 if TYPE_CHECKING:
@@ -19,33 +22,42 @@ import uuid
 
 class SparkKubernetesOperator(BaseOperator):
     def __init__(
-            self,
-            *,
-            spec_job_template_file: str,
-            namespace: str,
-            kubernetes_conn_id: str = "kubernetes_default",
-            api_group: str = "sparkoperator.k8s.io",
-            api_version: str = "v1beta2",
-            in_cluster: bool | None = None,
-            cluster_context: str | None = None,
-            watch: bool = True,
-            image: str,
-            main_application_path: str,
-            **kwargs,
+        self,
+        *,
+        spec_job_template_file: str,
+        namespace: str,
+        kubernetes_conn_id: str = "kubernetes_default",
+        api_group: str = "sparkoperator.k8s.io",
+        api_version: str = "v1beta2",
+        in_cluster: bool | None = None,
+        cluster_context: str | None = None,
+        watch: bool = True,
+        image: str,
+        main_application_path: str,
+        **kwargs,
     ) -> None:
         super().__init__(**kwargs)
         try:
-            path_to_templates = '/opt/airflow/dags/repo/plugins/custom_operators/spark/templates/'
+            path_to_templates = (
+                "/opt/airflow/dags/repo/plugins/custom_operators/spark/templates/"
+            )
             json_file_path = path_to_templates + spec_job_template_file
-            with open(json_file_path, 'r') as json_file:
+            with open(json_file_path, "r") as json_file:
                 self.application_file = json.load(json_file)
-                self.application_file['metadata']['namespace'] = namespace
-                self.application_file['metadata'][
-                    'name'] = f'{self.task_id[:13]}-{str(uuid.uuid4())}-task'.lower().replace('_', '-')
-                self.application_file['spec']['mainApplicationFile'] = main_application_path
-                self.application_file['spec']['image'] = image
+                self.application_file["metadata"]["namespace"] = namespace
+                self.application_file["metadata"][
+                    "name"
+                ] = f"{self.task_id[:13]}-{str(uuid.uuid4())}-task".lower().replace(
+                    "_", "-"
+                )
+                self.application_file["spec"][
+                    "mainApplicationFile"
+                ] = main_application_path
+                self.application_file["spec"]["image"] = image
         except FileNotFoundError:
-            raise FileNotFoundError(f"Config file '{spec_job_template_file}' not found.")
+            raise FileNotFoundError(
+                f"Config file '{spec_job_template_file}' not found."
+            )
         except json.JSONDecodeError:
             raise ValueError(f"Invalid JSON format in '{spec_job_template_file}'.")
 
@@ -77,8 +89,10 @@ class SparkKubernetesOperator(BaseOperator):
             )
         except ApiException as e:
             if e.status == 410:  # Resource version is too old
-                events: CoreV1EventList = self.hook.core_v1_client.list_namespaced_event(
-                    namespace=namespace, watch=False
+                events: CoreV1EventList = (
+                    self.hook.core_v1_client.list_namespaced_event(
+                        namespace=namespace, watch=False
+                    )
                 )
                 resource_version = events.metadata.resource_version
                 query_kwargs["resource_version"] = resource_version
@@ -116,7 +130,7 @@ class SparkKubernetesOperator(BaseOperator):
                 for event in namespace_event_stream:
                     obj = event["object"]
                     if event["object"].last_timestamp >= datetime.datetime.strptime(
-                            response["metadata"]["creationTimestamp"], "%Y-%m-%dT%H:%M:%S%z"
+                        response["metadata"]["creationTimestamp"], "%Y-%m-%dT%H:%M:%S%z"
                     ):
                         self.log.info(obj.message)
                         if obj.reason == "SparkDriverRunning":
